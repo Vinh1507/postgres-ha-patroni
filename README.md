@@ -47,6 +47,7 @@ Role: Master
 ![alt text](./images/image-17.png)
 
 Role: Replica
+
 ![alt text](./images/image-18.png)
 
 
@@ -377,7 +378,6 @@ sudo systemctl start patroni
 
 sudo systemctl status patroni
 ```
-![alt text](./images/image-2.png)
 
 ## Step 7 – Configuring HA Proxy on the node haproxynode: 
 
@@ -454,6 +454,9 @@ listen postgres
     server node2 192.168.144.135:5432 maxconn 100 check port 8008
     server node3 192.168.144.136:5432 maxconn 100 check port 8008
 ```
+
+pgAdmin4
+
 ![alt text](./images/image-6.png)
 
 Hoặc sử dụng psql:
