@@ -4,7 +4,7 @@ Patroni dùng để tạo giải pháp tính HA PostgreSQL sử dụng sự kế
 
 Cấu hình mặc định thì PostgreSQL không có tính năng dành cho high availability
 
-![alt text](image-16.png)
+![alt text](./images/image-16.png)
 
 Trong kiến trúc này, sẽ luôn có 1 `leader`, và những node còn lại sẽ là `replicas`. Khi leader down, một trong những replicas sẽ được chọn trở thành leader mới với sự giúp đỡ từ `etcd`
 
@@ -44,10 +44,10 @@ Việc lựa chọn leader cũng được hiển thị cho các node còn lại,
 
 Role: Master
 
-![alt text](image-17.png)
+![alt text](./images/image-17.png)
 
 Role: Replica
-![alt text](image-18.png)
+![alt text](./images/image-18.png)
 
 
 Kiến trúc này được thiết kế để cung cấp một cụm cơ sở dữ liệu mạnh mẽ, tự quản lý, trong đó tính sẵn sàng cao là mối quan tâm hàng đầu. Bằng cách sử dụng đồng thời Patroni, etcd và HAProxy, quá trình thiết lập sẽ tự động chuyển đổi dự phòng, cân bằng tải hiệu quả và sao chép nhất quán, từ đó mang lại một môi trường cơ sở dữ liệu linh hoạt và hiệu suất cao.
@@ -56,7 +56,7 @@ Quá trình hồi phục failover không phải luôn được thực hiện nga
 
 # Setup Postgres HA Patroni
 ## Architecture
-![alt text](image-15.png)
+![alt text](./images/image-15.png)
 
 Machine: node1                   IP: 192.168.144.133                 Role: Postgresql, Patroni
 
@@ -131,14 +131,14 @@ ETCD_ADVERTISE_CLIENT_URLS="http://192.168.144.129:2379"
 ETCD_INITIAL_CLUSTER_TOKEN="etcd-cluster"
 ETCD_INITIAL_CLUSTER_STATE="new"
 
-![alt text](image.png)
+![alt text](./images/image.png)
 
 sudo systemctl restart etcd 
 
 sudo systemctl status etcd
 
 curl http://192.168.144.129:2380/members
-![alt text](image-1.png)
+![alt text](./images/image-1.png)
 
 
 ## Step 5 – Configure Patroni on the node1, on the node2 and on the node3:
@@ -377,7 +377,7 @@ sudo systemctl start patroni
 
 sudo systemctl status patroni
 ```
-![alt text](image-2.png)
+![alt text](./images/image-2.png)
 
 ## Step 7 – Configuring HA Proxy on the node haproxynode: 
 
@@ -423,17 +423,17 @@ sudo systemctl restart haproxy
 
 sudo systemctl status haproxy
 ```
-![alt text](image-4.png)
+![alt text](./images/image-4.png)
 
 Truy cập http://192.168.144.132:8404/stats
-![alt text](image-3.png)
+![alt text](./images/image-3.png)
 
 
 Chạy trên 1 node bất kỳ
 ```
 patronictl -c /etc/patroni.yml list
 ```
-![alt text](image-5.png)
+![alt text](./images/image-5.png)
 
 
 ### Kết nối tới Database thông qua Ha proxy
@@ -454,7 +454,7 @@ listen postgres
     server node2 192.168.144.135:5432 maxconn 100 check port 8008
     server node3 192.168.144.136:5432 maxconn 100 check port 8008
 ```
-![alt text](image-6.png)
+![alt text](./images/image-6.png)
 
 Hoặc sử dụng psql:
 ```
@@ -490,17 +490,17 @@ SELECT * FROM employees;
 
 Khi hoàn thành tạo bảng
 
-![alt text](image-7.png)
+![alt text](./images/image-7.png)
 
 Sau khi insert 2 bản ghi
 
 Tất cả các node đã có dữ liệu
 
-![alt text](image-8.png)
+![alt text](./images/image-8.png)
 
 Nếu thực hiện insert trên replica sẽ không được phép thực hiện (read-only transaction)
 
-![alt text](image-9.png)
+![alt text](./images/image-9.png)
 ### Nhận xét:
 Đã thực hiện replica 
 
@@ -512,18 +512,18 @@ Hiện tại, node1 đang là primary, thực hiện stop patroni trên node1
 sudo systemctl stop patroni
 ```
 
-![alt text](image-10.png)
+![alt text](./images/image-10.png)
 
 Kết quả: Node3 được trở thành primary thay thế cho Node1
 
 Thực hiện thêm 1 bản ghi khi node1 chưa trở lại
 
-![alt text](image-11.png)
-![alt text](image-12.png)
+![alt text](./images/image-11.png)
+![alt text](./images/image-12.png)
 
 Khi node 1 đang down thì không thể access vào được
 
-![alt text](image-13.png)
+![alt text](./images/image-13.png)
 
 Cho node1 quay trở lại
 ```
@@ -533,7 +533,7 @@ sudo systemctl start patroni
 
 Node1 vẫn được replica đầy đủ như các node khác
 
-![alt text](image-14.png)
+![alt text](./images/image-14.png)
 
 
 ## References:
