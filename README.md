@@ -534,3 +534,10 @@ sudo systemctl start patroni
 Node1 vẫn được replica đầy đủ như các node khác
 
 ![alt text](image-14.png)
+
+
+## References:
+
+[High-availability (HA) PostgreSQL Cluster with Patroni - Medium](https://medium.com/@chriskevin_80184/high-availability-ha-postgresql-cluster-with-patroni-1af7a528c6be)
+
+[Setup Patroni - jfrog](https://jfrog.com/community/devops/highly-available-postgresql-cluster-using-patroni-and-haproxy/)
