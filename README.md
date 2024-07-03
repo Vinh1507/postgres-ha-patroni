@@ -383,22 +383,47 @@ sudo systemctl status patroni
 
 ```
 sudo vi /etc/haproxy/haproxy.cfg
+```
 
 Replace its context with this:
 
+```
 global
+        log /dev/log    local0
+        log /dev/log    local1 notice
+        chroot /var/lib/haproxy
+        stats socket /run/haproxy/admin.sock mode 660 level admin expose-fd listeners
+        stats timeout 30s
+        user haproxy
+        group haproxy
+        daemon
 
-        maxconn 100
-        log     127.0.0.1 local2
+        # Default SSL material locations
+        ca-base /etc/ssl/certs
+        crt-base /etc/ssl/private
+
+        # See: https://ssl-config.mozilla.org/#server=haproxy&server-version=2.0.3&config=intermediate
+        ssl-default-bind-ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES25>
+        ssl-default-bind-ciphersuites TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SH>
+        ssl-default-bind-options ssl-min-ver TLSv1.2 no-tls-tickets
+
 
 defaults
-        log global
-        mode tcp
-        retries 2
-        timeout client 30m
-        timeout connect 4s
-        timeout server 30m
-        timeout check 5s
+        log     global
+        mode    http
+        option  httplog
+        option  dontlognull
+        timeout connect 5000
+        timeout client  50000
+        timeout server  50000
+        errorfile 400 /etc/haproxy/errors/400.http
+        errorfile 403 /etc/haproxy/errors/403.http
+        errorfile 408 /etc/haproxy/errors/408.http
+        errorfile 500 /etc/haproxy/errors/500.http
+        errorfile 502 /etc/haproxy/errors/502.http
+        errorfile 503 /etc/haproxy/errors/503.http
+        errorfile 504 /etc/haproxy/errors/504.http
+
 
 frontend stats
    bind *:8404
@@ -538,6 +563,10 @@ Node1 vẫn được replica đầy đủ như các node khác
 
 ![alt text](./images/image-14.png)
 
+## Thử nghiệm tất cả các node đều down, sau đó 1 node quay trở lại
+
+Kết quả:
+- Khi có một node quay trở lại, node đó sẽ được trở thành leader của cụm
 
 ## References:
 
